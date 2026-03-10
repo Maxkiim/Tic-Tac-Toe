@@ -43,7 +43,7 @@ function GameControler(player1, player2) {
         for (let i = 0; i < winningCombinations.length; i++) {
             if (board[winningCombinations[i][0]] == ''){continue} //check if the cell is empty, if its empty then no point in check the other cells
             if (board[winningCombinations[i][0]] == board[winningCombinations[i][1]] && board[winningCombinations[i][1]] == board[winningCombinations[i][2]]){
-                result = `${turn} has won the game!`;
+                result = `${turn.name} has won the game!`;
                 gameOver = true;
                 return;
             }
@@ -66,8 +66,10 @@ function GameControler(player1, player2) {
         checkIfGameOver()
         if (!gameOver){
             switchTurn()
+        } else {
+            return result;
         }
     }
 
-    return {switchTurn, playGame, checkIfGameOver};
+    return {switchTurn, playGame, checkIfGameOver, getBoard};
 }
