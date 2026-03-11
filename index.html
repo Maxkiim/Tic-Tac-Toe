@@ -8,16 +8,45 @@
     <title>Tic Tac Toe Game</title>
 </head>
 <body>
+    <h1>TIC TAC TOE GAME </h1>
     <section id="game-sec">
         <div class="player-info">
-            <input type="text" name="player-game" id="player1">
+            <h2 id="p1">Player 1</h2>
+            <div class="players-input">
+                <div class="name-input">
+                    <label for="player1">Enter Player 1 name: </label>
+                    <input type="text" name="player-game" id="player1">
+                </div>
+                <label for="mark">Choose your mark:</label>
+                <div>
+                    <input type="radio" name="p1mark" id="player1-mark1" value="X">
+                    <label for="player1-mark1">X</label>
+                    <input type="radio" name="p1mark" id="player1-mark2" value="O">
+                    <label for="player1-mark2">O</label>
+                </div>
+            </div>
         </div>
         <div class="playingBoard">
         </div>
         <div class="player-info">
-            <input type="text" name="player-game" id="player2">
+            <h2 id="p2">Player 2</h2>
+            <div class="players-input">
+                <div class="name-input">
+                    <label for="player2">Enter player 2 name:</label>
+                    <input type="text" name="player-game" id="player2">
+                </div>
+                <label for="mark">Choose your mark:</label>
+                <div>
+                    <input type="radio" name="p2mark" id="player2-mark1" value="X">
+                    <label for="player2-mark1">X</label>
+                    <input type="radio" name="p2mark" id="player2-mark2" value="O">
+                    <label for="player2-mark2">O</label>
+                </div>
+            </div>
         </div>
-        <div id="result">
+    </section>
+    <section>
+        <div id="result"> 
         </div>
     </section>
     <section>

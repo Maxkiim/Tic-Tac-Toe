@@ -29,6 +29,7 @@ function GameControler(player1, player2) {
     let result = '';
     let gameOver = false;
 
+    let winnerCells = [];
     // Switch turns betweem players
     function switchTurn() {
         if (turn == player1){
@@ -48,8 +49,9 @@ function GameControler(player1, player2) {
         for (let i = 0; i < winningCombinations.length; i++) {
             if (board[winningCombinations[i][0]] == ''){continue} //check if the cell is empty, if its empty then no point in check the other cells
             if (board[winningCombinations[i][0]] == board[winningCombinations[i][1]] && board[winningCombinations[i][1]] == board[winningCombinations[i][2]]){
-                result = `${turn.name} has won the game!`;
+                result = `${turn.name} WINS!`;
                 gameOver = true;
+                winnerCells = winningCombinations[i];
                 return gameOver;
             }
         }
@@ -87,15 +89,26 @@ function GameControler(player1, player2) {
         gameOver = false;
         resetBoard();
     }
-    return {switchTurn, playGame, checkIfGameOver, getBoard, disableClick, getResult, resetGame};
+    function winningCells() {
+        return winnerCells;
+    }
+    return {switchTurn, playGame, checkIfGameOver, getBoard, disableClick, getResult, resetGame, winningCells, player1, player2};
 }
 
 function DisplayController(game){
     const board = game.getBoard();
+    const p1 = document.querySelector('#p1')
+    const p2 = document.querySelector('#p2')
     const playingBoard = document.querySelector('.playingBoard');
     const resetBtn = document.querySelector('#reset-btn');
     const resultBox = document.querySelector('#result')
+    const playersInput = document.querySelectorAll('.players-input');
+
+    p1.textContent = game.player1.name
+    p2.textContent = game.player2.name
     playingBoard.classList.add('board');
+    playersInput.forEach((input) => { input.classList.add('hidden'); });
+
 
     resetBtn.addEventListener('click', () => resetGame());
 
@@ -113,22 +126,42 @@ function DisplayController(game){
         playingBoard.innerHTML = '';
         DisplayController(game);
         displayResult();
-        if (game.checkIfGameOver()){game.disableClick()};
+        if (game.checkIfGameOver()){
+            game.disableClick()
+            // Highlight the winning row/column
+            const greenCells = game.winningCells();
+            const winnerCells = document.querySelectorAll('.cell');
+            for(i = 0; i < greenCells.length; i++){
+                winnerCells[greenCells[i]].classList.add('green');
+            }
+        };
     }
-
     function displayResult() {
         resultBox.textContent = game.getResult();
     }
     function resetGame() {
+        playersInput.forEach((input) => input.classList.remove('hidden'));
         game.resetGame();
         playingBoard.innerHTML = '';
+        resultBox.textContent = '';
         DisplayController(game);
     }
 }
 
 (() => {
-    const player1 = Player('Max', 'X');
-    const player2 = Player('Jonny', 'O');
-    const game = GameControler(player1, player2);
-    DisplayController(game)
+    const playBtn = document.querySelector('#play-btn');
+    playBtn.addEventListener('click', () => {
+        const p1name = document.querySelector('#player1').value
+        const p2name = document.querySelector('#player2').value
+        const p1mark = document.querySelector('input[name="p1mark"]:checked').value
+        const p2mark = document.querySelector('input[name="p2mark"]:checked').value
+        const player1 = Player(p1name, p1mark);
+        const player2 = Player(p2name, p2mark);
+        const game = GameControler(player1, player2);
+        DisplayController(game)
+    });
+    // const player1 = Player('Max', 'O');
+    // const player2 = Player('Josh', 'X');
+    // const game = GameControler(player1, player2);
+    // DisplayController(game)
 })();

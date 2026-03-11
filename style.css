@@ -8,6 +8,13 @@ body {
     display: flex;
     align-items: center;
 }
+.player-info {
+    margin: 20px;
+}
+.player-info .name-input{
+    display: flex;
+    flex-direction: column;
+}
 .board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -26,4 +33,10 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.green {
+    background-color: rgb(17, 232, 17);
+}
+.hidden {
+    display: none !important;
 }
