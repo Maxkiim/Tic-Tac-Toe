@@ -9,8 +9,13 @@ function Gameboard() {
     function getBoard() {
         return board;
     }
+    function resetBoard(){
+        for(i = 0; i < board.length; i++){
+            board[i] = '';
+        }
+    }
     // return the updated board
-    return {getBoard, markCell}
+    return {getBoard, markCell, resetBoard}
 }
 
 function Player(name, marker) {
@@ -18,7 +23,7 @@ function Player(name, marker) {
 }
 
 function GameControler(player1, player2) {
-    const {markCell, getBoard} = Gameboard();
+    const {markCell, getBoard, resetBoard} = Gameboard();
 
     let turn = player1;
     let result = '';
@@ -45,7 +50,7 @@ function GameControler(player1, player2) {
             if (board[winningCombinations[i][0]] == board[winningCombinations[i][1]] && board[winningCombinations[i][1]] == board[winningCombinations[i][2]]){
                 result = `${turn.name} has won the game!`;
                 gameOver = true;
-                return;
+                return gameOver;
             }
         }
         // if there is no winner, check if its a tie. First check if the board is filled
@@ -58,7 +63,7 @@ function GameControler(player1, player2) {
         if (boardFilled) {
             result = 'Its a tie!'; 
             gameOver = true; 
-            return;
+            return gameOver;
         };
     }
     function playGame(cell) {
@@ -70,6 +75,60 @@ function GameControler(player1, player2) {
             return result;
         }
     }
-
-    return {switchTurn, playGame, checkIfGameOver, getBoard};
+    function disableClick() {
+        turn = null;
+    }
+    function getResult() {
+        return result;
+    }
+    function resetGame() {
+        turn = player1;
+        result = '';
+        gameOver = false;
+        resetBoard();
+    }
+    return {switchTurn, playGame, checkIfGameOver, getBoard, disableClick, getResult, resetGame};
 }
+
+function DisplayController(game){
+    const board = game.getBoard();
+    const playingBoard = document.querySelector('.playingBoard');
+    const resetBtn = document.querySelector('#reset-btn');
+    const resultBox = document.querySelector('#result')
+    playingBoard.classList.add('board');
+
+    resetBtn.addEventListener('click', () => resetGame());
+
+    // display the board and update the content of the cells when players click on them.
+    board.forEach((cell, index) => {
+        let cellDiv = document.createElement('div');
+        cellDiv.classList.add('cell');
+        cellDiv.textContent =   cell;
+        playingBoard.appendChild(cellDiv);
+        cellDiv.addEventListener('click', () =>  updateBoard(index));
+    })
+    // Clear and re-render the updated board
+    function updateBoard(index) {
+        game.playGame(index);
+        playingBoard.innerHTML = '';
+        DisplayController(game);
+        displayResult();
+        if (game.checkIfGameOver()){game.disableClick()};
+    }
+
+    function displayResult() {
+        resultBox.textContent = game.getResult();
+    }
+    function resetGame() {
+        game.resetGame();
+        playingBoard.innerHTML = '';
+        DisplayController(game);
+    }
+}
+
+(() => {
+    const player1 = Player('Max', 'X');
+    const player2 = Player('Jonny', 'O');
+    const game = GameControler(player1, player2);
+    DisplayController(game)
+})();
